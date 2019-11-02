@@ -5,15 +5,15 @@
   --orange: #ff7800;
   --green: #33c50f;
   --red: #ff0808;
-  --grey: #9DAFBD;
+  --grey: #9dafbd;
   --white: #fff;
   --black: #192024;
-  --light-blue: #3898EC;
+  --light-blue: #3898ec;
 
   --main-bg: #edeff2;
   --blue-bg: #f0f0ff;
-  --red-bg: rgba(255, 8, 8, .1);
-  --green-bg: rgba(51, 197, 15, .1);
+  --red-bg: rgba(255, 8, 8, 0.1);
+  --green-bg: rgba(51, 197, 15, 0.1);
   --dark-blue-bg: #020050;
 
   --card: #fff;
@@ -31,7 +31,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: Lekton, "Open Sans", sans-serif;
+  font-family: Lekton, 'Open Sans', sans-serif;
 }
 
 a {
@@ -43,23 +43,23 @@ a:hover {
 }
 
 .primary-link {
-  color: var(--black)
+  color: var(--black);
 }
 
 .primary-link:hover {
-  color: var(--black)
+  color: var(--black);
 }
 
-input[type=text],
-input[type=search],
+input[type='text'],
+input[type='search'],
 textarea.form-control,
 div.dataTables_wrapper div.dataTables_length select {
   border: 1px solid #ccc;
   color: var(--black);
 }
 
-input[type=text]:focus,
-input[type=search]:focus,
+input[type='text']:focus,
+input[type='search']:focus,
 textarea.form-control:focus,
 div.dataTables_wrapper div.dataTables_length select:focus {
   border-color: var(--light-blue);
@@ -90,10 +90,10 @@ div.dataTables_wrapper div.dataTables_length select:focus {
 
 @keyframes spin {
   0% {
-    transform:rotate(0deg);
+    transform: rotate(0deg);
   }
   100% {
-    transform:rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 
@@ -104,22 +104,22 @@ div.dataTables_wrapper div.dataTables_length select:focus {
 }
 
 .page-header .page-header-menu {
-  border-bottom: 1px solid rgba(51, 51, 51, .1);
+  border-bottom: 1px solid rgba(51, 51, 51, 0.1);
 }
 
-.page-header .page-header-menu .hor-menu .navbar-nav>li>a {
+.page-header .page-header-menu .hor-menu .navbar-nav > li > a {
   color: var(--black);
   text-transform: uppercase;
   letter-spacing: 2px;
   font-weight: 700;
 }
 
-.page-header .page-header-menu .hor-menu .navbar-nav>li>a:hover {
+.page-header .page-header-menu .hor-menu .navbar-nav > li > a:hover {
   background-color: transparent;
   color: var(--blue);
 }
 
-.page-header .page-header-menu .hor-menu .navbar-nav>li.active>a {
+.page-header .page-header-menu .hor-menu .navbar-nav > li.active > a {
   color: var(--blue);
 }
 
@@ -127,7 +127,7 @@ div.dataTables_wrapper div.dataTables_length select:focus {
   padding: 10px 10px 20px 20px;
 }
 
-.dashboard-stat2 .display .number h3>small,
+.dashboard-stat2 .display .number h3 > small,
 .dashboard-stat2 .display .number small {
   color: var(--grey);
   font-weight: 700;
@@ -141,19 +141,19 @@ div.dataTables_wrapper div.dataTables_length select:focus {
   background-color: var(--card);
 }
 
-.portlet.light>.portlet-title>.caption.caption-md>.caption-subject {
+.portlet.light > .portlet-title > .caption.caption-md > .caption-subject {
   font-size: 18px;
   letter-spacing: 0.06em;
 }
 
-.portlet.light>.portlet-title>.caption {
+.portlet.light > .portlet-title > .caption {
   color: var(--grey);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   font-weight: 700;
 }
 
-.portlet.light>.portlet-title>.caption>i {
+.portlet.light > .portlet-title > .caption > i {
   margin-top: 0;
   color: inherit;
 }
@@ -162,23 +162,23 @@ div.dataTables_wrapper div.dataTables_length select:focus {
   background-color: transparent;
 }
 
-.page-head .page-title>h1 {
+.page-head .page-title > h1 {
   font-size: 24px;
   font-weight: 700;
   color: var(--black);
 }
 
-.page-head .page-title>h1>small {
+.page-head .page-title > h1 > small {
   color: var(--grey);
 }
 
-.pagination>li>a,
-.pagination>li>span {
+.pagination > li > a,
+.pagination > li > span {
   color: var(--blue);
 }
 
-.pagination>.active>a,
-.pagination>.active>a:hover {
+.pagination > .active > a,
+.pagination > .active > a:hover {
   background-color: var(--blue);
   border-color: var(--blue);
 }
@@ -192,17 +192,16 @@ div .todo-tasklist-item:hover {
 }
 
 .item-border-green {
-  border-color: var(--green)
+  border-color: var(--green);
 }
 
 .item-border-blue {
-  border-color: var(--blue)
+  border-color: var(--blue);
 }
 
 .item-border-red {
-  border-color: var(--red)
+  border-color: var(--red);
 }
-
 
 .btn.btn-outline.green-haze {
   border-color: var(--blue);
@@ -240,7 +239,6 @@ div .todo-tasklist-item:hover {
   border-color: var(--blue-bg);
 }
 
-
 .btn-info,
 .btn.blue-madison:not(.btn-outline) {
   color: var(--white);
@@ -259,7 +257,7 @@ div .todo-tasklist-item:hover {
   transform: translate(0px, -4px);
 }
 
-.tabbable-line>.nav-tabs>li>a {
+.tabbable-line > .nav-tabs > li > a {
   font-size: 14px;
   text-transform: uppercase;
   color: var(--black);
@@ -267,17 +265,17 @@ div .todo-tasklist-item:hover {
   letter-spacing: 0.05em;
 }
 
-.tabbable-line>.nav-tabs>li:hover {
+.tabbable-line > .nav-tabs > li:hover {
   border-bottom-width: 2px !important;
   border-color: var(--blue);
 }
 
-.tabbable-line>.nav-tabs>li.active {
+.tabbable-line > .nav-tabs > li.active {
   border-bottom-width: 2px !important;
   border-color: var(--blue);
 }
 
-.tabbable-line>.nav-tabs>li.active>a {
+.tabbable-line > .nav-tabs > li.active > a {
   color: var(--blue);
 }
 
@@ -287,13 +285,13 @@ div .todo-tasklist-item:hover {
   color: var(--white);
 }
 
-.social-icons li>a {
+.social-icons li > a {
   transition: none;
   border-radius: 50% !important;
 }
 
 .eth-stat-text {
-  color: var(--grey)
+  color: var(--grey);
 }
 
 .scroll-to-top {
@@ -315,7 +313,7 @@ div .todo-tasklist-item:hover {
   align-items: center;
   background: #fff;
   margin: 1px -15px;
-  padding: 20px;    
+  padding: 20px;
   cursor: pointer;
   width: auto !important;
 }
@@ -341,7 +339,7 @@ div .todo-tasklist-item:hover {
 }
 
 .node-item:hover {
-  background: #F8F9FC;
+  background: #f8f9fc;
 }
 
 .node-item__left,
@@ -351,7 +349,13 @@ div .todo-tasklist-item:hover {
   width: 50%;
 }
 
-.node-item__left {  
+.node-item__date {
+  margin-top: 6px;
+  line-height: 14px;
+  font-size: 12px;
+}
+
+.node-item__left {
   padding-right: 15px;
 }
 
@@ -367,20 +371,20 @@ div .todo-tasklist-item:hover {
 }
 
 .node-info__avatar {
-  flex-shrink: 1;    
+  flex-shrink: 1;
   margin-right: 15px;
 }
 
-.node-info__avatar-wrapper {  
-  width: 60px; 
-  height: 60px; 
-  background-color: var(--main-bg); 
+.node-info__avatar-wrapper {
+  width: 60px;
+  height: 60px;
+  background-color: var(--main-bg);
   border: 1px solid var(--main-bg);
 }
 
 .node-info__avatar-wrapper img {
   width: 100%;
-  height: 100%;  
+  height: 100%;
 }
 
 .node-info__about {
@@ -388,7 +392,7 @@ div .todo-tasklist-item:hover {
 }
 
 .node-info__about-company {
-  display: flex; 
+  display: flex;
   justify-content: space-between;
   width: 100%;
 }
@@ -399,11 +403,11 @@ div .todo-tasklist-item:hover {
 
 .node-stats {
   display: flex;
-  width: 100%;  
+  width: 100%;
   /* justify-content: space-between;   */
 }
 
-.node-stats__cell {    
+.node-stats__cell {
   flex-grow: 1;
   flex-basis: 30%;
   padding: 0 10px;
@@ -413,10 +417,10 @@ div .todo-tasklist-item:hover {
   white-space: nowrap;
 }
 
-.node-stats__cell.right {  
+.node-stats__cell.right {
   flex-shrink: 1;
   flex-basis: 15%;
-  text-align: right;    
+  text-align: right;
 }
 
 .node-stats__cell.right.center {
@@ -436,19 +440,19 @@ div .todo-tasklist-item:hover {
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
-  margin: 0 5px;  
+  margin: 0 5px;
   width: 30px;
   height: 34px;
-  border: 1px solid #DCDCDC;
-  background-color: #EDEDED;
+  border: 1px solid #dcdcdc;
+  background-color: #ededed;
 }
 
-.node-votes li img {  
+.node-votes li img {
   width: 28px;
   height: 28px;
 }
 
-.node-votes li.green {  
+.node-votes li.green {
   border-color: var(--blue);
 }
 
@@ -456,11 +460,11 @@ div .todo-tasklist-item:hover {
   .page-header .page-header-menu {
     background-color: transparent;
     margin-top: 0 !important;
-    border: 1px solid rgba(51, 51, 51, .1);
+    border: 1px solid rgba(51, 51, 51, 0.1);
   }
 
   .page-header .page-header-top {
-    margin-bottom: 0 !important;;
+    margin-bottom: 0 !important;
   }
 
   .page-header .page-header-top .menu-toggler {
@@ -470,7 +474,7 @@ div .todo-tasklist-item:hover {
     margin-top: 15px;
     margin-bottom: 10px;
   }
-  .page-header .page-header-top .top-menu .navbar-nav>li.dropdown {
+  .page-header .page-header-top .top-menu .navbar-nav > li.dropdown {
     padding: 0 2px;
   }
 }
@@ -481,7 +485,7 @@ div .todo-tasklist-item:hover {
   }
 
   .page-header .page-header-menu {
-    border: 1px solid rgba(51, 51, 51, .1);
+    border: 1px solid rgba(51, 51, 51, 0.1);
     margin: 15px 15px;
     padding: 0;
   }
@@ -490,5 +494,3 @@ div .todo-tasklist-item:hover {
     background-color: transparent;
   }
 }
-
-

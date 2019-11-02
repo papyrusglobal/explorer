@@ -91,11 +91,24 @@
                 <h2>{{ votesRequired }}</h2>
               </div>
               <div class="node-stats__cell nowrap">
+                <h5>Start time</h5>
+                <p class="node-item__date" ng-bind-html="millisecondsToDateString(poll.startTime * 1000)"></p>
+              </div>
+              <div ng-if="poll.status === 'closed'" class="node-stats__cell nowrap">
+                <h5>Close time</h5>
+                <p class="node-item__date" ng-bind-html="millisecondsToDateString(poll.closeTime * 1000)"></p>
+              </div>
+              <div ng-if="poll.status === 'active'" class="node-stats__cell nowrap">
                 <h5>Time left</h5>
                 <h2>{{ millisecondsToWords(poll.closeTime * 1000 - now) }}</h2>
               </div>
-              <div class="node-stats__cell right center">
-                <h2>{{poll.votes < votesRequired ? '🕐' : '👌'}}</h2>                
+              <div ng-if="poll.status === 'active'" class="node-stats__cell right center">
+                <h2>🕐</h2>                
+              </div>
+              <div ng-if="poll.status === 'closed'" class="node-stats__cell right center">
+                <h2 title="{{ poll.votes < votesRequired ? 'Authority Node was not added' : 'Authority Node was successfully added' }}">
+                  {{poll.votes < votesRequired ? '❌' : '✅'}}
+                </h2>
               </div>
             </div>
           </div>

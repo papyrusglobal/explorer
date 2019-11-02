@@ -45,19 +45,45 @@ module.exports = function(app) {
   app.post('/authorities', authoritiesRoute);
 };
 
+const POLL_DURATION = 14 * 24 * 60 * 60 * 1000;
+
+const injectStartTime = doc => {
+  startTime = (doc.closeTime * 1000 - POLL_DURATION) / 1000;
+  return Object.assign({}, doc, { startTime });
+};
+
+const injectPollStatus = doc => {
+  status = Date.now() - doc.closeTime * 1000 >= 0 ? 'closed' : 'active';
+  return Object.assign({}, doc, { status });
+};
+
+const injectToDocs = (docs, fns = []) => {
+  let i = 0;
+  const result = [];
+  for (; i < docs.length; i++) {
+    result.push(fns.reduce((acc, fn) => fn(acc), docs[i]));
+  }
+  return result;
+};
+
 const getPolls = async (req, res) => {
   const type = req.query.type || 0;
   async.parallel(
     {
       nodes: cb => {
-        (type == 0 ? Authority : Blacklist).find({})
+        (type == 0 ? Authority : Blacklist)
+          .find({})
           .lean(true)
-          .exec('find', (err, docs) => cb(null, docs));
+          .exec('find', (err, docs) =>
+            cb(null, injectToDocs(docs, [injectPollStatus]))
+          );
       },
       polls: cb => {
         Poll.find({ type, isDisabled: false })
           .lean(true)
-          .exec('find', (err, docs) => cb(null, docs));
+          .exec('find', (err, docs) =>
+            cb(null, injectToDocs(docs, [injectStartTime, injectPollStatus]))
+          );
       }
     },
     (err, result) => {
@@ -71,7 +97,7 @@ const getPolls = async (req, res) => {
 const SIGNATURES = {
   voteForNewAuthority: '0xfc3c9afd',
   voteForBlackListAuthority: '0x332327a2'
-}
+};
 
 const getVotesList = async (req, res) => {
   const type = req.query.type || 0;
@@ -84,18 +110,19 @@ const getVotesList = async (req, res) => {
     return;
   }
 
-  const signatute = SIGNATURES[type == 0 ? 'voteForNewAuthority' : 'voteForBlackListAuthority'];  
+  const signatute =
+    SIGNATURES[type == 0 ? 'voteForNewAuthority' : 'voteForBlackListAuthority'];
   const $and = [
-    { input: new RegExp('^' + signatute, 'gi') },          
-    { input: new RegExp(address + '$', 'gi') },    
+    { input: new RegExp('^' + signatute, 'gi') },
+    { input: new RegExp(address + '$', 'gi') }
   ];
   // if (type == 1) {
   //   $and.push({ status: isPoll ? null : { $ne: null } });
   // }
-  const results = await Transaction.find({$and}).lean(true);  
+  const results = await Transaction.find({ $and }).lean(true);
   res.write(JSON.stringify(results));
   res.end();
-}
+};
 
 const getAddr = async (req, res) => {
   // TODO: validate addr and tx

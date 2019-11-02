@@ -2,16 +2,38 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" style="text-indent: 0; font-size: 32px; margin-right: 6px;" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <button
+          type="button"
+          class="close"
+          style="text-indent: 0; font-size: 32px; margin-right: 6px;"
+          data-dismiss="modal"
+          aria-hidden="true"
+        >
+          &times;
+        </button>
         <h4 class="modal-title" ng-if="modalDataLoading">Votes</h4>
-        <h4 class="modal-title" ng-if="!modalDataLoading">{{ modalData.length }} vote{{ modalData.length === 1 ? '' : 's' }}</h4>
+        <h4 class="modal-title" ng-if="!modalDataLoading">
+          <span ng-if="modalData.length === 0">Votes recieved</span>
+          <span ng-if="modalData.length > 0">
+            {{ modalData.length }} vote{{ modalData.length === 1 ? '' : 's' }}
+            <span ng-if="modalIsBlacklist && modalIsPoll">
+              blacklist approval proposed votes
+            </span>
+            <span ng-if="!(modalIsBlacklist && modalIsPoll)">
+              recieved
+            </span>
+          </span>
+        </h4>
       </div>
       <div class="modal-body" ng-transclude>
-        <span ng-show="modalDataLoading">Loading...</span>        
+        <span ng-show="modalDataLoading">Loading...</span>
         <span ng-show="!modalDataLoading && modalData.length ==- 0">
           No votes recieved
         </span>
-        <ul class="node-items" ng-show="!modalDataLoading && modalData.length > 0">    
+        <ul
+          class="node-items"
+          ng-show="!modalDataLoading && modalData.length > 0"
+        >
           <li ng-repeat="node in modalData track by $index" class="node-item">
             <div class="node-item__left">
               <div class="node-info">
@@ -20,7 +42,7 @@
                     <img ng-src="{{ addressToSrcIcon(node.from) }}" />
                   </div>
                 </div>
-                <div class="node-info__about">          
+                <div class="node-info__about">
                   <strong>{{ node.from }}</strong>
                   <div class="node-info__about-company">
                     <div>
@@ -29,15 +51,17 @@
                     </div>
                     <div>
                       <h5>Home page</h5>
-                      <a href="https://papyrus.network" target="_blank">papyrus.network</a>
+                      <a href="https://papyrus.network" target="_blank"
+                        >papyrus.network</a
+                      >
                     </div>
                   </div>
                 </div>
               </div>
-            </div>            
-          </li>  
-        </ul>        
-      </div>      
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>
