@@ -1,46 +1,29 @@
-<div class="row">
-  <div class="col-md-12 portlet light">
-    <div class="portlet-body light">
-      No blacklist nodes yet
-    </div>
-  </div>
-</div>
-
-<!-- <ul class="node-items" style="margin-bottom: 30px;">    
-  <li ng-repeat="node in nodes track by $index" class="node-item">
+<ul class="node-items">    
+  <li ng-repeat="node in nodes track by $index" ng-click="toggleModal(node.address)" class="node-item">
     <div class="node-item__left">
       <div class="node-info">
         <div class="node-info__avatar">
-          <div class="node-info__avatar-wrapper"></div>
+          <div class="node-info__avatar-wrapper">
+            <img ng-src="{{ addressToSrcIcon(node.address) }}" />
+          </div>
         </div>
         <div class="node-info__about">          
           <strong>{{ node.address }}</strong>
           <div class="node-info__about-company">
             <div>
               <h5>Company</h5>
-              Unknown
+              Papyrus
             </div>
             <div>
               <h5>Home page</h5>
-              <a href="#" target="_blank">Unknown</a>
+              <a href="https://papyrus.network" target="_blank">papyrus.network</a>
             </div>
           </div>
         </div>
       </div>
     </div>
     <div class="node-item__right">
-      <div class="node-stats">
-        <div class="node-stats__cell">
-          <h5>Votes casted</h5>
-          <ul class="node-votes">
-            <li 
-              ng-repeat="slot in node.slots" 
-              ng-class="{'green': slot.timestamp > 0}"
-              title="{{ slot.timestamp > 0 ? 'Vote slot used ' + slot.timestamp + ' on ' + slot.address : null }}"
-            >
-            </li>            
-          </ul>
-        </div>
+      <div class="node-stats">        
         <div class="node-stats__cell right">
           <h5>Votes recieved</h5>
           <h2>{{ node.votes }}</h2>
@@ -48,17 +31,17 @@
       </div>
     </div>
   </li>  
-</ul> -->
+</ul>
 
-<div class="row">
+<div class="row" style="margin-top: 30px;">
     <div class="col-md-12 portlet light">
       <div class="portlet-title">
-        <div class="caption">Candidate Nodes</div>
+        <div class="caption">Blacklist Candidates</div>
       </div>
       <div class="portlet-body">
         <span ng-show="polls.length == 0">No active polls yet</span>
         <ul class="node-items" ng-show="polls.length > 0">
-          <li class="node-item" ng-repeat="poll in polls">
+          <li class="node-item" ng-repeat="poll in polls" ng-click="toggleModal(poll.address, true)">
             <div class="node-item__left">
               <div class="node-info">
                 <div class="node-info__avatar">
@@ -71,11 +54,11 @@
                   <div class="node-info__about-company">
                     <div>
                       <h5>Company</h5>
-                      Unknown
+                      Papyrus
                     </div>
                     <div>
                       <h5>Home page</h5>
-                      <a href="#" target="_blank">Unknown</a>
+                      <a href="https://papyrus.network" target="_blank">papyrus.network</a>
                     </div>
                   </div>
                 </div>
@@ -95,12 +78,25 @@
                   <h5>Votes required</h5>
                   <h2>{{ votesRequired }}</h2>
                 </div>
-                <div class="node-stats__cell nowrap">
+                  <div class="node-stats__cell nowrap">
+                  <h5>Start time</h5>
+                  <p class="node-item__date" ng-bind-html="millisecondsToDateString(poll.startTime * 1000)"></p>
+                </div>
+                <div ng-if="poll.status === 'closed'" class="node-stats__cell nowrap">
+                  <h5>Close time</h5>
+                  <p class="node-item__date" ng-bind-html="millisecondsToDateString(poll.closeTime * 1000)"></p>
+                </div>
+                <div ng-if="poll.status === 'active'" class="node-stats__cell nowrap">
                   <h5>Time left</h5>
                   <h2>{{ millisecondsToWords(poll.closeTime * 1000 - now) }}</h2>
                 </div>
-                <div class="node-stats__cell right center">
-                  <h2>{{poll.votes < votesRequired ? '🕐' : '👌'}}</h2>                
+                <div ng-if="poll.status === 'active'" class="node-stats__cell right center">
+                  <h2>🕐</h2>                
+                </div>
+                <div ng-if="poll.status === 'closed'" class="node-stats__cell right center">
+                  <h2 title="{{ poll.votes < votesRequired ? 'Authority Node was not added to blacklist' : 'Authority Node successfully added to blacklist' }}">
+                    {{poll.votes < votesRequired ? '❌' : '✅'}}
+                  </h2>                
                 </div>
               </div>
             </div>
@@ -109,3 +105,5 @@
       </div>
     </div>
   </div>
+
+  <voters-list visible="showModal"></voters-list>
