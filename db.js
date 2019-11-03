@@ -4,150 +4,173 @@ const { Schema } = mongoose;
 
 const Block = new Schema(
   {
-    'number': { type: Number, index: { unique: true } },
-    'hash': String,
-    'parentHash': String,
-    'nonce': String,
-    'sha3Uncles': String,
-    'logsBloom': String,
-    'transactionsRoot': String,
-    'stateRoot': String,
-    'receiptRoot': String,
-    'miner': { type: String, lowercase: true },
-    'difficulty': String,
-    'totalDifficulty': String,
-    'size': Number,
-    'extraData': String,
-    'gasLimit': Number,
-    'gasUsed': Number,
-    'timestamp': Number,
-    'blockTime': Number,
-    'uncles': [String],
-  }, { collection: 'Block' },
+    number: { type: Number, index: { unique: true } },
+    hash: String,
+    parentHash: String,
+    nonce: String,
+    sha3Uncles: String,
+    logsBloom: String,
+    transactionsRoot: String,
+    stateRoot: String,
+    receiptRoot: String,
+    miner: { type: String, lowercase: true },
+    difficulty: String,
+    totalDifficulty: String,
+    size: Number,
+    extraData: String,
+    gasLimit: Number,
+    gasUsed: Number,
+    timestamp: Number,
+    blockTime: Number,
+    uncles: [String]
+  },
+  { collection: 'Block' }
 );
 
 const Account = new Schema(
   {
-    'address': { type: String, index: { unique: true } },
-    'balance': Number,
-    'blockNumber': Number,
-    'type': { type: Number, default: 0 }, // address: 0x0, contract: 0x1
-  }, { collection: 'Account' },
+    address: { type: String, index: { unique: true } },
+    balance: Number,
+    blockNumber: Number,
+    type: { type: Number, default: 0 } // address: 0x0, contract: 0x1
+  },
+  { collection: 'Account' }
 );
 
 const Contract = new Schema(
   {
-    'address': { type: String, index: { unique: true } },
-    'blockNumber': Number,
-    'ERC': { type: Number, index: true }, //0:normal contract, 2:ERC20, 3:ERC223
-    'creationTransaction': String,
-    'contractName': String,
-    'tokenName': String,
-    'symbol': String,
-    'owner': String,
-    'decimals': Number,
-    'totalSupply': Number,
-    'compilerVersion': String,
-    'optimization': Boolean,
-    'sourceCode': String,
-    'abi': String,
-    'byteCode': String,
-  }, { collection: 'Contract' },
+    address: { type: String, index: { unique: true } },
+    blockNumber: Number,
+    ERC: { type: Number, index: true }, //0:normal contract, 2:ERC20, 3:ERC223
+    creationTransaction: String,
+    contractName: String,
+    tokenName: String,
+    symbol: String,
+    owner: String,
+    decimals: Number,
+    totalSupply: Number,
+    compilerVersion: String,
+    optimization: Boolean,
+    sourceCode: String,
+    abi: String,
+    byteCode: String
+  },
+  { collection: 'Contract' }
 );
 
 const Transaction = new Schema(
   {
-    'hash': { type: String, index: { unique: true }, lowercase: true },
-    'nonce': Number,
-    'blockHash': String,
-    'blockNumber': Number,
-    'transactionIndex': Number,
-    'status': Number,
-    'from': { type: String, lowercase: true },
-    'to': { type: String, lowercase: true },
-    'creates': { type: String, lowercase: true },
-    'value': String,
-    'gas': Number,
-    'gasUsed': Number,
-    'gasPrice': String,
-    'timestamp': Number,
-    'input': String,
-  }, { collection: 'Transaction' },
+    hash: { type: String, index: { unique: true }, lowercase: true },
+    nonce: Number,
+    blockHash: String,
+    blockNumber: Number,
+    transactionIndex: Number,
+    status: Number,
+    from: { type: String, lowercase: true },
+    to: { type: String, lowercase: true },
+    creates: { type: String, lowercase: true },
+    value: String,
+    gas: Number,
+    gasUsed: Number,
+    gasPrice: String,
+    timestamp: Number,
+    input: String
+  },
+  { collection: 'Transaction' }
 );
 
 const TokenTransfer = new Schema(
   {
-    'hash': { type: String, index: { unique: true }, lowercase: true },
-    'blockNumber': Number,
-    'method': String,
-    'from': { type: String, lowercase: true },
-    'to': { type: String, lowercase: true },
-    'contract': { type: String, lowercase: true },
-    'value': String,
-    'timestamp': Number,
-  }, { collection: 'TokenTransfer' },
+    hash: { type: String, index: { unique: true }, lowercase: true },
+    blockNumber: Number,
+    method: String,
+    from: { type: String, lowercase: true },
+    to: { type: String, lowercase: true },
+    contract: { type: String, lowercase: true },
+    value: String,
+    timestamp: Number
+  },
+  { collection: 'TokenTransfer' }
 );
 
 const BlockStat = new Schema(
   {
-    'number': { type: Number, index: { unique: true } },
-    'timestamp': Number,
-    'difficulty': String,
-    'hashrate': String,
-    'txCount': Number,
-    'gasUsed': Number,
-    'gasLimit': Number,
-    'miner': String,
-    'blockTime': Number,
-    'uncleCount': Number,
-  }, { collection: 'BlockStat' },
+    number: { type: Number, index: { unique: true } },
+    timestamp: Number,
+    difficulty: String,
+    hashrate: String,
+    txCount: Number,
+    gasUsed: Number,
+    gasLimit: Number,
+    miner: String,
+    blockTime: Number,
+    uncleCount: Number
+  },
+  { collection: 'BlockStat' }
 );
 
 const Market = new Schema(
   {
-    'symbol': String,
-    'timestamp': Number,
-    'quoteBTC': Number,
-    'quoteUSD': Number,
-  }, { collection: 'Market' },
+    symbol: String,
+    timestamp: Number,
+    quoteBTC: Number,
+    quoteUSD: Number
+  },
+  { collection: 'Market' }
 );
 
 const Poll = new Schema(
   {
-    address: { type: String, },
+    address: { type: String },
     type: { type: Number, default: 0 }, // 0 — authority, 1 - blacklist
     closeTime: { type: Number },
     votes: { type: Number, default: 0 },
     isVoted: { type: Boolean, default: false },
-    isDisabled: { type: Boolean, default: false }
+    isDisabled: { type: Boolean, default: false },
+    info: { type: Schema.Types.ObjectId, ref: 'AuthorityInfo' }
   },
   { collection: 'Poll' }
 );
 
 const AuthoritySlot = new Schema(
   {
-    address: { type: String, default: '0x0000000000000000000000000000000000000000' },
+    address: {
+      type: String,
+      default: '0x0000000000000000000000000000000000000000'
+    },
     timestamp: { type: Number, default: 0 }
   },
-  { _id : false }
+  { _id: false }
 );
 
 const Authority = new Schema(
   {
     address: { type: String, index: { unique: true } },
     votes: { type: Number, default: 0 },
+    info: { type: Schema.Types.ObjectId, ref: 'AuthorityInfo' },
     slots: [AuthoritySlot]
   },
   { collection: 'Authority' }
+);
+
+const AuthorityInfo = new Schema(
+  {
+    address: { type: String, required: true, index: { unique: true } },
+    website: { type: String, default: null },
+    name: { type: String, default: null },
+    logotype: { type: String, default: null }
+  },
+  { collection: 'AuthorityInfo' }
 );
 
 const Blacklist = new Schema(
   {
     address: { type: String, index: { unique: true } },
     votes: { type: Number, default: 0 },
+    info: { type: Schema.Types.ObjectId, ref: 'AuthorityInfo' }
   },
   { collection: 'Blacklist' }
-)
+);
 
 // create indices
 Transaction.index({ blockNumber: -1 });
@@ -167,8 +190,9 @@ TokenTransfer.index({ to: 1, blockNumber: -1 });
 TokenTransfer.index({ contract: 1, blockNumber: -1 });
 Poll.index({ address: 1, isDisabled: 1, type: 1 });
 Poll.index({ address: 1, isDisabled: 1, isVoted: 1 });
-Poll.index({ address: 1, isDisabled: 1, isVoted: 1, type: 1, });
+Poll.index({ address: 1, isDisabled: 1, isVoted: 1, type: 1 });
 Blacklist.index({ address: 1 });
+AuthorityInfo.index({ address: 1, website: 1 });
 
 mongoose.model('BlockStat', BlockStat);
 mongoose.model('Block', Block);
@@ -180,6 +204,7 @@ mongoose.model('TokenTransfer', TokenTransfer);
 mongoose.model('Poll', Poll);
 mongoose.model('Authority', Authority);
 mongoose.model('AuthoritySlot', AuthoritySlot);
+mongoose.model('AuthorityInfo', AuthorityInfo);
 mongoose.model('Blacklist', Blacklist);
 module.exports.BlockStat = mongoose.model('BlockStat');
 module.exports.Block = mongoose.model('Block');
@@ -191,6 +216,7 @@ module.exports.TokenTransfer = mongoose.model('TokenTransfer');
 module.exports.Poll = mongoose.model('Poll');
 module.exports.Authority = mongoose.model('Authority');
 module.exports.AuthoritySlot = mongoose.model('AuthoritySlot');
+module.exports.AuthorityInfo = mongoose.model('AuthorityInfo');
 module.exports.Blacklist = mongoose.model('Blacklist');
 
 mongoose.Promise = global.Promise;
@@ -201,6 +227,5 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost/explorerDB', {
   // user: 'explorer',
   // pass: 'yourdbpasscode'
 });
-
 
 // mongoose.set('debug', true);

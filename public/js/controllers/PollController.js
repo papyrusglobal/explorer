@@ -51,6 +51,17 @@ angular
       );
     };
 
+    $scope.stripUrlProtocol = function(url) {
+      if (!url) return url;
+      try {
+        var link = document.createElement('a');
+        link.href = url;
+        return link.host + (link.pathname.length > 1 ? link.pathname : '');
+      } catch (err) {
+        return url;
+      }
+    };
+
     $scope.showModal = false;
     $scope.modalDataLoading = true;
     $scope.modalAddress = null;
@@ -125,7 +136,14 @@ angular
       setNowTimeout = undefined;
     });
   })
-  .directive('votersList', function($http) {
+  .directive('authorityItem', function() {
+    return {
+      restrict: 'E',
+      templateUrl: '/views/authorityItem.html',
+      replace: true
+    };
+  })
+  .directive('votersList', function() {
     return {
       restrict: 'E',
       templateUrl: '/views/votersList.html',

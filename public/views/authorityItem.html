@@ -1,0 +1,24 @@
+<div class="node-info">
+  <div class="node-info__avatar">
+    <div class="node-info__avatar-wrapper">
+      <div ng-if="!node.info.logotype" class="node-info__avatar-empty">
+        <div>Uploading logo is in progress</div>
+      </div>
+      <img ng-if="node.info.logotype" ng-src="{{ node.info.logotype }}" />
+    </div>
+  </div>
+  <div class="node-info__about">          
+    <strong>{{ node.info.address }}</strong>
+    <div class="node-info__about-company">
+      <div>
+        <h5>Company</h5>
+        {{ node.info.name || stripUrlProtocol(node.info.website) || 'Undefined' }}
+      </div>
+      <div>
+        <h5>Home page</h5>
+        <span ng-if="!node.info.website">Undefined</span>              
+        <a ng-if="node.info.website" href="{{ node.info.website }}" target="_blank">{{ stripUrlProtocol(node.info.website) }}</a>
+      </div>
+    </div>
+  </div>
+</div>

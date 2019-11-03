@@ -378,8 +378,18 @@ div .todo-tasklist-item:hover {
 .node-info__avatar-wrapper {
   width: 60px;
   height: 60px;
+}
+
+.node-info__avatar-empty {
   background-color: var(--main-bg);
   border: 1px solid var(--main-bg);
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  font-size: 9px;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.5);
 }
 
 .node-info__avatar-wrapper img {
