@@ -4,6 +4,7 @@ const Block = mongoose.model('Block');
 const Transaction = mongoose.model('Transaction');
 const Account = mongoose.model('Account');
 const Authority = mongoose.model('Authority');
+const AuthorityInfo = mongoose.model('AuthorityInfo');
 const Blacklist = mongoose.model('Blacklist');
 const Poll = mongoose.model('Poll');
 const async = require('async');
@@ -73,6 +74,7 @@ const getPolls = async (req, res) => {
       nodes: cb => {
         (type == 0 ? Authority : Blacklist)
           .find({})
+          .populate('info')
           .lean(true)
           .exec('find', (err, docs) =>
             cb(null, injectToDocs(docs, [injectPollStatus]))
@@ -80,6 +82,7 @@ const getPolls = async (req, res) => {
       },
       polls: cb => {
         Poll.find({ type, isDisabled: false })
+          .populate('info')
           .lean(true)
           .exec('find', (err, docs) =>
             cb(null, injectToDocs(docs, [injectStartTime, injectPollStatus]))
@@ -119,7 +122,18 @@ const getVotesList = async (req, res) => {
   // if (type == 1) {
   //   $and.push({ status: isPoll ? null : { $ne: null } });
   // }
-  const results = await Transaction.find({ $and }).lean(true);
+  let results = await Transaction.find({ $and }).lean(true);
+  const resultAddresses = results.map(r => new RegExp(`^${r.from}$`, 'i'));
+  let infos = (await AuthorityInfo.find({
+    address: { $in: resultAddresses }
+  }).lean(true)).reduce((acc, doc) => {
+    acc[doc.address.toLowerCase()] = doc;
+    return acc;
+  }, {});
+  results = results.map(item => {
+    item.info = infos[item.from];
+    return item;
+  });
   res.write(JSON.stringify(results));
   res.end();
 };
