@@ -1,6 +1,6 @@
 var FETCH_DELAY = 1000;
 var VOTES_REQUIRED = {
-  AUTHORITY: 24,
+  AUTHORITY: 3,
   BLACKLIST: 3
 };
 
@@ -19,10 +19,10 @@ angular
       if (milliseconds <= 0) {
         return zero;
       }
-      const hours = Math.floor(milliseconds / 1000 / 3600);
+      var hours = Math.floor(milliseconds / 1000 / 3600);
       milliseconds = (milliseconds / 1000) % 3600;
-      const minutes = Math.floor(milliseconds / 60);
-      const seconds = Math.floor(milliseconds % 60);
+      var minutes = Math.floor(milliseconds / 60);
+      var seconds = Math.floor(milliseconds % 60);
       if (hours > 0) {
         return hours + 'h ' + minutes + 'm ' + seconds + 's';
       } else if (minutes > 0) {
@@ -35,7 +35,7 @@ angular
       return value < 10 ? '0' + value : value;
     }
     $scope.millisecondsToDateString = function(milliseconds, br = true) {
-      const date = new Date(milliseconds);
+      var date = new Date(milliseconds);
       return (
         addLeadingZero(date.getDate()) +
         '.' +
