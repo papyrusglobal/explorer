@@ -1,34 +1,41 @@
 {
-    "nodeAddr":     "localhost",
-    "wsPort":       8546,
-    "startBlock":   0,
-    "endBlock":     "latest",
-    "quiet":        true,
-    "syncAll":      true,
-    "patch":        true,
-    "patchBlocks":  100,
-    "bulkSize":     100,
-    "biosAddress":  "0x82e3FB6449b7cb18bD9095B963e3E5863d21F8B4",
-    "settings": {
-        "symbol": "PPR",
-        "name": "Papyrus",
-        "title": "Papyrus Explorer",
-        "author": "Elaine, Cody, Hackmod, Bakon",
-        "about": "This is an open source Blockchain Explorer based on Ethereum Classic Explorer.",
-        "logo": "/img/explorer-logo.png",
-        "copyright": "Papyrus Explorer",
-        "poweredbyCustom": false,
-        "poweredbyEtcImage": "/img/powered-by-etcexplorer-w.png",
-        "poweredbyEtc": true,
-        "tokenList": "tokens.json",
-        "useRichList": true,
-        "useFiat": true,
-        "miners": {
-            "0x21b63aC543f1A418684AbB30307262A13ab4D0E5": "testnet2-head",
-            "0x743Cf78AdE27abD94C4588eD30CAD1425ECcEfF3": "testnet2-node2",
-            "0x6a47f2e17ba215f02db9a14a4a3793d0397d35f5": "testnet2-node3",
-            "0x9d308ffc5cb47378443636774e7f9dc007fc5db3": "testnet2-node4",
-            "0xe2740ad38baf1f87fb0b97144605b9a6f51bd617": "testnet2-node5"
-        }
+  "nodeAddr": "localhost",
+  "wsPort": 8546,
+  "startBlock": 0,
+  "endBlock": "latest",
+  "quiet": true,
+  "syncAll": true,
+  "patch": true,
+  "patchBlocks": 100,
+  "bulkSize": 100,
+  "biosAddress": "0x82e3FB6449b7cb18bD9095B963e3E5863d21F8B4",
+  "rootAuthorities": [
+    "0x249Fe1Eee9BFEEe01a4586504CFCf46AFA28cE98",
+    "0x72694bEE55363B76540264B446C4Fd4e2Bd6A456",
+    "0xe679Cd4A4FE138956c2Bd85405d71105Ac3a3064",
+    "0x5d0F572fAD99E95Aa52dd2D8f5A877D13d498495",
+    "0x90955fa060dD57B05d5CC5938d90CcCF92D6D467"
+  ],
+  "settings": {
+    "symbol": "PPR",
+    "name": "Papyrus",
+    "title": "Papyrus Explorer",
+    "author": "Elaine, Cody, Hackmod, Bakon",
+    "about": "This is an open source Blockchain Explorer based on Ethereum Classic Explorer.",
+    "logo": "/img/explorer-logo.png",
+    "copyright": "Papyrus Explorer",
+    "poweredbyCustom": false,
+    "poweredbyEtcImage": "/img/powered-by-etcexplorer-w.png",
+    "poweredbyEtc": true,
+    "tokenList": "tokens.json",
+    "useRichList": true,
+    "useFiat": true,
+    "miners": {
+      "0x21b63aC543f1A418684AbB30307262A13ab4D0E5": "testnet2-head",
+      "0x743Cf78AdE27abD94C4588eD30CAD1425ECcEfF3": "testnet2-node2",
+      "0x6a47f2e17ba215f02db9a14a4a3793d0397d35f5": "testnet2-node3",
+      "0x9d308ffc5cb47378443636774e7f9dc007fc5db3": "testnet2-node4",
+      "0xe2740ad38baf1f87fb0b97144605b9a6f51bd617": "testnet2-node5"
     }
+  }
 }

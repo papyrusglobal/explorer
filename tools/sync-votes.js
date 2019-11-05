@@ -4,12 +4,10 @@ const ABI = require('../abi/bios');
 const { getConfig } = require('../utils');
 const config = getConfig();
 
-let rootAuthorities;
-try {
-  rootAuthorities = require('../rootAuthorities.json');
-} catch (err) {
-  rootAuthorities = [];
-}
+let rootAuthorities = (config.rootAuthorities !== undefined
+  ? config.rootAuthorities
+  : []
+).map(address => address.toLowerCase());
 
 require('../db.js');
 const mongoose = require('mongoose');
@@ -150,7 +148,9 @@ const saveOrUpdateAuthorities = authorities => {
         {
           address,
           slots,
-          votes: rootAuthorities.includes(address) ? votes - 1 : votes,
+          votes: rootAuthorities.includes(address.toLowerCase())
+            ? votes - 1
+            : votes,
           info: doc._id
         },
         { upsert: true, setDefaultsOnInsert: true },
