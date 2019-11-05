@@ -150,7 +150,7 @@ const saveOrUpdateAuthorities = authorities => {
         {
           address,
           slots,
-          votes: rootAuthorities.includes(address) ? votes - 1 : votest,
+          votes: rootAuthorities.includes(address) ? votes - 1 : votes,
           info: doc._id
         },
         { upsert: true, setDefaultsOnInsert: true },
