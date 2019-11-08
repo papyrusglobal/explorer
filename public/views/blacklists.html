@@ -45,7 +45,7 @@
                   <p class="node-item__date" ng-bind-html="millisecondsToDateString(node.startTime * 1000)"></p>
                 </div>
                 <div ng-if="node.status === 'closed'" class="node-stats__cell nowrap">
-                  <h5>Close time</h5>
+                  <h5>End time</h5>
                   <p class="node-item__date" ng-bind-html="millisecondsToDateString(node.closeTime * 1000)"></p>
                 </div>
                 <div ng-if="node.status === 'active'" class="node-stats__cell nowrap">
