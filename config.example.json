@@ -8,13 +8,13 @@
   "patch": true,
   "patchBlocks": 100,
   "bulkSize": 100,
-  "biosAddress": "0x82e3FB6449b7cb18bD9095B963e3E5863d21F8B4",
+  "biosAddress": "0x196FAcABB6512C8343ffA8BcA4C0174D7B301fF9",
   "rootAuthorities": [
-    "0x249Fe1Eee9BFEEe01a4586504CFCf46AFA28cE98",
-    "0x72694bEE55363B76540264B446C4Fd4e2Bd6A456",
-    "0xe679Cd4A4FE138956c2Bd85405d71105Ac3a3064",
-    "0x5d0F572fAD99E95Aa52dd2D8f5A877D13d498495",
-    "0x90955fa060dD57B05d5CC5938d90CcCF92D6D467"
+    "0x1300b595d18EDeE442dbEeD51f9F291235828Db6",
+    "0x17b7Ee40e1aF97B00F690d8cB547880eb8263cc6",
+    "0x628Ba7961C23574dFdfd07b0a4A470B04ec3a174",
+    "0x6d278076bcd4Ac3E91B3658D998A5F7D355B1a55",
+    "0x7a82C7B6F617617EB1410140d66D6dFd955D8C97"
   ],
   "settings": {
     "symbol": "PPR",
@@ -31,11 +31,11 @@
     "useRichList": true,
     "useFiat": true,
     "miners": {
-      "0x21b63aC543f1A418684AbB30307262A13ab4D0E5": "testnet2-head",
-      "0x743Cf78AdE27abD94C4588eD30CAD1425ECcEfF3": "testnet2-node2",
-      "0x6a47f2e17ba215f02db9a14a4a3793d0397d35f5": "testnet2-node3",
-      "0x9d308ffc5cb47378443636774e7f9dc007fc5db3": "testnet2-node4",
-      "0xe2740ad38baf1f87fb0b97144605b9a6f51bd617": "testnet2-node5"
+      "0x1300b595d18EDeE442dbEeD51f9F291235828Db6": "Papyrus-1",
+      "0x17b7Ee40e1aF97B00F690d8cB547880eb8263cc6": "Papyrus-2",
+      "0x628Ba7961C23574dFdfd07b0a4A470B04ec3a174": "BTech",
+      "0x6d278076bcd4Ac3E91B3658D998A5F7D355B1a55": "Memorandum.Capital",
+      "0x7a82C7B6F617617EB1410140d66D6dFd955D8C97": "Atomars"
     }
   }
 }
