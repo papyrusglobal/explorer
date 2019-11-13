@@ -1,7 +1,11 @@
-const Web3 = require('web3');
+const Web3 = require("web3");
 
-const ABI = require('../abi/bios');
-const { getConfig } = require('../utils');
+const ABI = require("../abi/bios");
+const {
+  getConfig,
+  getKnownAuthorities,
+  createUpdateScheduler
+} = require("../utils");
 const config = getConfig();
 
 let rootAuthorities = (config.rootAuthorities !== undefined
@@ -9,20 +13,23 @@ let rootAuthorities = (config.rootAuthorities !== undefined
   : []
 ).map(address => address.toLowerCase());
 
-require('../db.js');
-const mongoose = require('mongoose');
+let knownAuthorities = getKnownAuthorities();
+// Every minute update knownAuthorities map
+createUpdateScheduler(60 * 1000)(getKnownAuthorities, true);
 
-const Transaction = mongoose.model('Transaction');
-const Authority = mongoose.model('Authority');
-const AuthoritySlot = mongoose.model('AuthoritySlot');
-const AuthorityInfo = mongoose.model('AuthorityInfo');
-const Blacklist = mongoose.model('Blacklist');
-const Poll = mongoose.model('Poll');
+require("../db.js");
+const mongoose = require("mongoose");
+const Transaction = mongoose.model("Transaction");
+const Authority = mongoose.model("Authority");
+const AuthoritySlot = mongoose.model("AuthoritySlot");
+const AuthorityInfo = mongoose.model("AuthorityInfo");
+const Blacklist = mongoose.model("Blacklist");
+const Poll = mongoose.model("Poll");
 
 const SYNC_TIMEOUT = 1000;
 const SIGNATURES = {
-  voteForNewAuthority: '0xfc3c9afd',
-  voteForBlackListAuthority: '0x332327a2'
+  voteForNewAuthority: "0xfc3c9afd",
+  voteForBlackListAuthority: "0x332327a2"
 };
 
 console.log(`Connecting ${config.nodeAddr}:${config.wsPort}...`);
@@ -31,40 +38,35 @@ const web3 = new Web3(
     `ws://${config.nodeAddr}:${config.wsPort}`
   )
 );
-if (web3.eth.net.isListening()) console.log('Web3 connection established');
+if (web3.eth.net.isListening()) console.log("Web3 connection established");
 const contract = new web3.eth.Contract(ABI, config.biosAddress);
 
 const callMethod = (method, ...args) =>
   contract.methods[method](...args).call();
 
-const getWebsites = async addresses =>
-  Promise.all(addresses.map(async address => 'https://papyrus.network'));
-
 const getAuthorities = async () => {
-  const authorities = await callMethod('getAuthorities');
+  const authorities = await callMethod("getAuthorities");
   const data = await Promise.all(
-    authorities.map(address => callMethod('getAuthorityState', address))
+    authorities.map(address => callMethod("getAuthorityState", address))
   );
-  const websites = await getWebsites(authorities);
   return authorities.map((address, index) => ({
     address,
     votes: parseInt(data[index][0], 10),
     slots: data[index][1].map((a, i) => ({
       address: a,
       timestamp: parseInt(data[index][2][i], 10)
-    })),
-    website: websites[index]
+    }))
   }));
 };
 
 const getBlacklisted = async () => {
-  const blacklisted = await callMethod('getAuthorityBlacklistPollAddresses');
+  const blacklisted = await callMethod("getAuthorityBlacklistPollAddresses");
   const results = await Transaction.aggregate([
     {
       $match: {
         $and: [
           {
-            input: new RegExp('^' + SIGNATURES.voteForBlackListAuthority, 'gi')
+            input: new RegExp("^" + SIGNATURES.voteForBlackListAuthority, "gi")
           },
           { status: { $ne: null } }
         ]
@@ -72,63 +74,64 @@ const getBlacklisted = async () => {
     },
     {
       $group: {
-        _id: '$input',
+        _id: "$input",
         count: { $sum: 1 }
       }
     }
   ]);
-  const websites = await getWebsites(blacklisted);
-  return blacklisted.map((address, index) => {
+  return blacklisted.map(address => {
     const match = results.find(res =>
-      new RegExp(address.substr(2).toLowerCase(), 'gi').test(res._id)
+      new RegExp(address.substr(2).toLowerCase(), "gi").test(res._id)
     );
     return {
       address,
-      votes: (match && match.count) || 0,
-      website: websites[index]
+      votes: (match && match.count) || 0
     };
   });
 };
 
 const getNewAuthorityPolls = async () => {
-  const addresses = await callMethod('getAddNewPollAddresses');
+  const addresses = await callMethod("getAddNewPollAddresses");
   const data = await Promise.all(
-    addresses.map(address => callMethod('addNewPoll', address))
+    addresses.map(address => callMethod("addNewPoll", address))
   );
-  const websites = await getWebsites(addresses);
   return addresses.map((address, index) => ({
     address,
     closeTime: data[index].closeTime,
-    votes: parseInt(data[index].votes, 10),
-    website: websites[index]
+    votes: parseInt(data[index].votes, 10)
   }));
 };
 
 const getBlacklistPolls = async () => {
-  const addresses = await callMethod('getAuthorityBlacklistPollAddresses');
+  const addresses = await callMethod("getAuthorityBlacklistPollAddresses");
   const data = await Promise.all(
-    addresses.map(address => callMethod('authorityBlacklistPoll', address))
+    addresses.map(address => callMethod("authorityBlacklistPoll", address))
   );
-  const websites = await getWebsites(addresses);
   return addresses.map((address, index) => ({
     address,
     closeTime: data[index].closeTime,
     votes: parseInt(data[index].votes, 10),
-    isVoted: data[index].voted || false,
-    website: websites[index]
+    isVoted: data[index].voted || false
   }));
 };
 
-function saveAuthorityInfoAndRunCb({ address, website } = {}, callback) {
-  if (!address && !website) {
+function saveAuthorityInfoAndRunCb({ address } = {}, callback) {
+  if (!address) {
     throw new Error("Can't create Authority Info");
+  }
+  const lowercasedAddress = address.toLowerCase();
+  const updates = {};
+  if (knownAuthorities.has(lowercasedAddress)) {
+    const knownAuthority = knownAuthorities.get(lowercasedAddress);
+    for (let key in knownAuthority) {
+      if (["website", "name", "logotype"].includes(key)) {
+        updates[key] = knownAuthority[key];
+      }
+    }
   }
   AuthorityInfo.findOneAndUpdate(
     { address: address },
-    {
-      address,
-      website
-    },
+    updates,
     { upsert: true, setDefaultsOnInsert: true, new: true },
     (err, doc) => {
       callback(err, doc);

@@ -44,5 +44,6 @@ jspm_packages
 # local data
 data/
 config.json
+fixtures/knownAuthorities.json
 .node-xmlhttprequest-*
 /nbproject/private/
