@@ -12,7 +12,7 @@ angular
 
     $rootScope.$state.current.data['pageSubTitle'] = $stateParams.hash;
     $scope.addrHash = $stateParams.hash;
-    $scope.addr = { balance: 0, count: 0, mined: 0 };
+    $scope.addr = { balance: 0, balanceWei: 0, count: 0, mined: 0 };
     $scope.settings = $rootScope.setup;
 
     //fetch web3 stuff

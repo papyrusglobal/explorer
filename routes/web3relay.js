@@ -36,7 +36,9 @@ try {
   if (error.code === 'MODULE_NOT_FOUND') {
     var local = require('../config.example.json');
     _.extend(config, local);
-    console.log('No config file found. Using default configuration... (config.example.json)');
+    console.log(
+      'No config file found. Using default configuration... (config.example.json)'
+    );
   } else {
     throw error;
     process.exit(1);
@@ -45,7 +47,11 @@ try {
 
 //Create Web3 connection
 console.log(`Connecting ${config.nodeAddr}:${config.wsPort}...`);
-web3 = new Web3(new Web3.providers.WebsocketProvider(`ws://${config.nodeAddr}:${config.wsPort}`));
+web3 = new Web3(
+  new Web3.providers.WebsocketProvider(
+    `ws://${config.nodeAddr}:${config.wsPort}`
+  )
+);
 
 if (web3.eth.net.isListening()) console.log('Web3 connection established');
 else throw 'No connection, please specify web3host in conf.json';
@@ -68,85 +74,92 @@ exports.data = async (req, res) => {
   if ('tx' in req.body) {
     var txHash = req.body.tx.toLowerCase();
 
-    Transaction.findOne({ hash: txHash }).lean(true).exec(async (err, doc) => {
-      if (err || !doc) {
-        web3.eth.getTransaction(txHash, (err, tx) => {
-          if (err || !tx) {
-            console.error(`TxWeb3 error :${err}`);
-            if (!tx) {
-              web3.eth.getBlock(txHash, (err, block) => {
-                if (err || !block) {
-                  console.error(`BlockWeb3 error :${err}`);
-                  res.write(JSON.stringify({ 'error': true }));
-                } else {
-                  console.log(`BlockWeb3 found: ${txHash}`);
-                  res.write(JSON.stringify({ 'error': true, 'isBlock': true }));
-                }
+    Transaction.findOne({ hash: txHash })
+      .lean(true)
+      .exec(async (err, doc) => {
+        if (err || !doc) {
+          web3.eth.getTransaction(txHash, (err, tx) => {
+            if (err || !tx) {
+              console.error(`TxWeb3 error :${err}`);
+              if (!tx) {
+                web3.eth.getBlock(txHash, (err, block) => {
+                  if (err || !block) {
+                    console.error(`BlockWeb3 error :${err}`);
+                    res.write(JSON.stringify({ error: true }));
+                  } else {
+                    console.log(`BlockWeb3 found: ${txHash}`);
+                    res.write(JSON.stringify({ error: true, isBlock: true }));
+                  }
+                  res.end();
+                });
+              } else {
+                res.write(JSON.stringify({ error: true }));
                 res.end();
-              });
+              }
             } else {
-              res.write(JSON.stringify({ 'error': true }));
-              res.end();
-            }
-          } else {
-            const ttx = tx;
-            ttx.value = etherUnits.toEther(new BigNumber(tx.value), 'wei');
-            //get TxReceipt status & gasUsed
-            web3.eth.getTransactionReceipt(txHash, (err, receipt) => {
-              if (err) {
-                console.error(err);
-                return;
-              }
-              ttx.gasUsed = receipt.gasUsed;
-              if (receipt.status) {
-                ttx.status = receipt.status;
-              }
-              if (!tx.to && !tx.creates) {
-                if (receipt && receipt.contractAddress) {
-                  ttx.creates = receipt.contractAddress;
+              const ttx = tx;
+              ttx.value = etherUnits.toEther(new BigNumber(tx.value), 'wei');
+              //get TxReceipt status & gasUsed
+              web3.eth.getTransactionReceipt(txHash, (err, receipt) => {
+                if (err) {
+                  console.error(err);
+                  return;
                 }
-              }
-            });
-            //get timestamp from block
-            const block = web3.eth.getBlock(tx.blockNumber, (err, block) => {
-              if (!err && block) ttx.timestamp = block.timestamp;
-              ttx.isTrace = (ttx.input != '0x');
-              txResponse = ttx;
-            });
-          }
-        });
-      } else {
-        txResponse = doc;
-      }
+                ttx.gasUsed = receipt.gasUsed;
+                if (receipt.status) {
+                  ttx.status = receipt.status;
+                }
+                if (!tx.to && !tx.creates) {
+                  if (receipt && receipt.contractAddress) {
+                    ttx.creates = receipt.contractAddress;
+                  }
+                }
+              });
+              //get timestamp from block
+              const block = web3.eth.getBlock(tx.blockNumber, (err, block) => {
+                if (!err && block) ttx.timestamp = block.timestamp;
+                ttx.isTrace = ttx.input != '0x';
+                txResponse = ttx;
+              });
+            }
+          });
+        } else {
+          txResponse = doc;
+        }
 
-      const latestBlock = await web3.eth.getBlockNumber() + 1;
+        const latestBlock = (await web3.eth.getBlockNumber()) + 1;
 
-      txResponse.confirmations = latestBlock - txResponse.blockNumber;
+        txResponse.confirmations = latestBlock - txResponse.blockNumber;
 
-      if (txResponse.confirmations === latestBlock) {
-        txResponse.confirmation = 0;
-      }
-      txResponse.gasPriceGwei = etherUnits.toGwei(new BigNumber(txResponse.gasPrice), 'wei');
-      txResponse.gasPriceEther = etherUnits.toEther(new BigNumber(txResponse.gasPrice), 'wei');
-      txResponse.txFee = txResponse.gasPriceEther * txResponse.gasUsed;
+        if (txResponse.confirmations === latestBlock) {
+          txResponse.confirmation = 0;
+        }
+        txResponse.gasPriceGwei = etherUnits.toGwei(
+          new BigNumber(txResponse.gasPrice),
+          'wei'
+        );
+        txResponse.gasPriceEther = etherUnits.toEther(
+          new BigNumber(txResponse.gasPrice),
+          'wei'
+        );
+        txResponse.txFee = txResponse.gasPriceEther * txResponse.gasUsed;
 
-      if (config.settings.useFiat) {
-        const latestPrice = await Market.findOne().sort({ timestamp: -1 });
-        txResponse.txFeeUSD = txResponse.txFee * latestPrice.quoteUSD;
-        txResponse.valueUSD = txResponse.value * latestPrice.quoteUSD;
-      }
+        if (config.settings.useFiat) {
+          const latestPrice = await Market.findOne().sort({ timestamp: -1 });
+          txResponse.txFeeUSD = txResponse.txFee * latestPrice.quoteUSD;
+          txResponse.valueUSD = txResponse.value * latestPrice.quoteUSD;
+        }
 
-      res.write(JSON.stringify(txResponse));
-      res.end();
-    });
-
+        res.write(JSON.stringify(txResponse));
+        res.end();
+      });
   } else if ('tx_trace' in req.body) {
     var txHash = req.body.tx_trace.toLowerCase();
 
     web3.trace.transaction(txHash, (err, tx) => {
       if (err || !tx) {
         console.error(`TraceWeb3 error :${err}`);
-        res.write(JSON.stringify({ 'error': true }));
+        res.write(JSON.stringify({ error: true }));
       } else {
         res.write(JSON.stringify(filterTrace(tx)));
       }
@@ -158,11 +171,11 @@ exports.data = async (req, res) => {
     // from block to end block, paging "toAddress":[addr],
     // start from creation block to speed things up
     // TODO: store creation block
-    const filter = { 'fromBlock': '0x1d4c00', 'toAddress': [addr] };
+    const filter = { fromBlock: '0x1d4c00', toAddress: [addr] };
     web3.trace.filter(filter, (err, tx) => {
       if (err || !tx) {
         console.error(`TraceWeb3 error :${err}`);
-        res.write(JSON.stringify({ 'error': true }));
+        res.write(JSON.stringify({ error: true }));
       } else {
         res.write(JSON.stringify(filterTrace(tx)));
       }
@@ -177,10 +190,11 @@ exports.data = async (req, res) => {
     if (options.indexOf('balance') > -1) {
       try {
         addrData['balance'] = await web3.eth.getBalance(addr);
+        addrData['balanceWei'] = addrData['balance'];
         addrData['balance'] = etherUnits.toEther(addrData['balance'], 'wei');
       } catch (err) {
         console.error(`AddrWeb3 error :${err}`);
-        addrData = { 'error': true };
+        addrData = { error: true };
       }
     }
     if (options.indexOf('count') > -1) {
@@ -188,7 +202,7 @@ exports.data = async (req, res) => {
         addrData['count'] = await web3.eth.getTransactionCount(addr);
       } catch (err) {
         console.error(`AddrWeb3 error :${err}`);
-        addrData = { 'error': true };
+        addrData = { error: true };
       }
     }
     if (options.indexOf('bytecode') > -1) {
@@ -198,7 +212,7 @@ exports.data = async (req, res) => {
         else addrData['isContract'] = false;
       } catch (err) {
         console.error(`AddrWeb3 error :${err}`);
-        addrData = { 'error': true };
+        addrData = { error: true };
       }
     }
 
@@ -217,26 +231,33 @@ exports.data = async (req, res) => {
       blockNumOrHash = parseInt(req.body.block);
     }
 
-    Block.findOne({ $or: [{ hash: blockNumOrHash }, { number: blockNumOrHash }] },
-      { '_id': 0 }).lean(true).exec('findOne', (err, doc) => {
-      if (err || !doc) {
-        web3.eth.getBlock(blockNumOrHash, (err, block) => {
-          if (err || !block) {
-            console.error(`BlockWeb3 error :${err}`);
-            res.write(JSON.stringify({ 'error': true }));
-          } else {
-            res.write(JSON.stringify(filterBlocks(block)));
-          }
-          res.end();
-        });
-      } else {
-        Transaction.find({ blockNumber: doc.number }).distinct('hash', (err, txs) => {
-          doc['transactions'] = txs;
-          res.write(JSON.stringify(filterBlocks(doc)));
-          res.end();
-        });
-      }
-    });
+    Block.findOne(
+      { $or: [{ hash: blockNumOrHash }, { number: blockNumOrHash }] },
+      { _id: 0 }
+    )
+      .lean(true)
+      .exec('findOne', (err, doc) => {
+        if (err || !doc) {
+          web3.eth.getBlock(blockNumOrHash, (err, block) => {
+            if (err || !block) {
+              console.error(`BlockWeb3 error :${err}`);
+              res.write(JSON.stringify({ error: true }));
+            } else {
+              res.write(JSON.stringify(filterBlocks(block)));
+            }
+            res.end();
+          });
+        } else {
+          Transaction.find({ blockNumber: doc.number }).distinct(
+            'hash',
+            (err, txs) => {
+              doc['transactions'] = txs;
+              res.write(JSON.stringify(filterBlocks(doc)));
+              res.end();
+            }
+          );
+        }
+      });
 
     /*
     / TODO: Refactor, "block" / "uncle" determinations should likely come later
@@ -257,7 +278,7 @@ exports.data = async (req, res) => {
 
     if (typeof blockNumOrHash === 'undefined') {
       console.error(`UncleWeb3 error :${err}`);
-      res.write(JSON.stringify({ 'error': true }));
+      res.write(JSON.stringify({ error: true }));
       res.end();
       return;
     }
@@ -265,19 +286,18 @@ exports.data = async (req, res) => {
     web3.eth.getBlock(blockNumOrHash, uncleIdx, (err, uncle) => {
       if (err || !uncle) {
         console.error(`UncleWeb3 error :${err}`);
-        res.write(JSON.stringify({ 'error': true }));
+        res.write(JSON.stringify({ error: true }));
       } else {
         res.write(JSON.stringify(filterBlocks(uncle)));
       }
       res.end();
     });
-
   } else if ('action' in req.body) {
     if (req.body.action == 'hashrate') {
       web3.eth.getBlock('latest', (err, latest) => {
         if (err || !latest) {
           console.error(`StatsWeb3 error :${err}`);
-          res.write(JSON.stringify({ 'error': true }));
+          res.write(JSON.stringify({ error: true }));
           res.end();
         } else {
           console.log(`StatsWeb3: latest block: ${latest.number}`);
@@ -287,16 +307,26 @@ exports.data = async (req, res) => {
           web3.eth.getBlock(checknum, (err, block) => {
             if (err || !block) {
               console.error(`StatsWeb3 error :${err}`);
-              res.write(JSON.stringify({
-                'blockHeight': latest.number, 'difficulty': latest.difficulty, 'blockTime': 0, 'hashrate': 0,
-              }));
+              res.write(
+                JSON.stringify({
+                  blockHeight: latest.number,
+                  difficulty: latest.difficulty,
+                  blockTime: 0,
+                  hashrate: 0
+                })
+              );
             } else {
               console.log(`StatsWeb3: check block: ${block.number}`);
               const blocktime = (latest.timestamp - block.timestamp) / nblock;
               const hashrate = latest.difficulty / blocktime;
-              res.write(JSON.stringify({
-                'blockHeight': latest.number, 'difficulty': latest.difficulty, 'blockTime': blocktime, 'hashrate': hashrate,
-              }));
+              res.write(
+                JSON.stringify({
+                  blockHeight: latest.number,
+                  difficulty: latest.difficulty,
+                  blockTime: blocktime,
+                  hashrate: hashrate
+                })
+              );
             }
             res.end();
           });
@@ -310,7 +340,6 @@ exports.data = async (req, res) => {
     console.error(`Invalid Request: ${action}`);
     res.status(400).send();
   }
-
 };
 
 exports.web3 = web3;
