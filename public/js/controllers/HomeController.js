@@ -1,4 +1,4 @@
-var FETCH_DELAY = 1500;
+var FETCH_DELAY = 1000;
 
 angular.module('BlocksApp')
   .controller('HomeController', function ($rootScope, $scope, $http, $timeout) {
