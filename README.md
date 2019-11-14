@@ -123,6 +123,17 @@ You can configure intervals (how often a new data point is pulled) and range (ho
 
 `RESCAN=100:7700000 node tools/stats.js` (New data point every 100 blocks. Go back 7,700,000 blocks).
 
+## pm2 installation
+Start
+
+    pm2 start tools/sync.js
+    pm2 start tools/sync-votes.js
+    PORT=2000 pm2 start app.js
+    
+Restart     
+
+    pm2 restart all
+
 ## Docker installation
 
 Set `nodeAddr` in `config.json` to `host.docker.internal`
